@@ -120,21 +120,99 @@ class Intern extends Employee {
         `
     }
 }
-//Prompt to generate Engineer
 
+//Prompt to choose Employee
+const employeeInquirer = () => {
+    inquirer
+        .prompt([
+            {
+                type: "list",
+                name: "employee",
+                message: "Please select an employee type to add",
+                choices: ["Engineer", "Intern"],
+            },
+        ])
+        .then(data => {
+            switch (data.employee) {
+                case "Engineer":
+                    engineerInquirer();
+                    break;
+                case "Intern":
+                    internInquirer();
+                    break;
+            }
+        })
+}
+
+//Prompt to generate Engineer
+const engineerInquirer = () => {
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "engineer",
+                message: "Please enter the Engineer's name",
+            },
+            {
+                type: "input",
+                name: "id",
+                message: "Please enter the Engineer's Employee ID",
+            },
+            {
+                type: "input",
+                name: "email",
+                message: "Please enter the Engineer's Email",
+            },
+            {
+                type: "input",
+                name: "gitHub",
+                message: "Please enter the Engineer's GitHub account",
+            },
+        ])
+        .then(data => {
+            generateEngineer(data);
+            employeeInquirer(); 
+        })
+}
+
+//Prompt to generate Intern
+const internInquirer = () => {
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "intern",
+                message: "Please enter the Intern's name",
+            },
+            {
+                type: "input",
+                name: "id",
+                message: "Please enter the Intern's Employee ID",
+            },
+            {
+                type: "input",
+                name: "email",
+                message: "Please enter the Intern's Email",
+            },
+            {
+                type: "input",
+                name: "gitHub",
+                message: "Please enter the Intern's GitHub account",
+            },
+        ])
+        .then(data => {
+            generateIntern(data);
+            employeeInquirer(); 
+        })
+}
 
 //Inquirer Prompt to start application
 inquirer
     .prompt([
-        // {
-        //     type: "input",
-        //     name: "teamName",
-        //     message: "Please enter your team name",
-        // },
         {
             type: "input",
-            name: "manager",
-            message: "Please enter the Manager's name",
+            name: "teamName",
+            message: "Please enter your team name",
         },
         {
             type: "input",
@@ -143,34 +221,23 @@ inquirer
         },
         {
             type: "input",
-            name: "manager",
-            message: "Please enter the Manager's name",
+            name: "id",
+            message: "Please enter the Manager's Employee ID",
         },
         {
             type: "input",
-            name: "manager",
-            message: "Please enter the Manager's name",
+            name: "email",
+            message: "Please enter the Manager's Email",
         },
         {
-            type: "list",
-            name: "employee",
-            message: "Please select an employee type",
-            choices: ["Engineer", "Intern"],
+            type: "input",
+            name: "officeNum",
+            message: "Please enter the Manager's Office Number",
         },
     ])
     .then(data => {
-        switch (data.employee) {
-            case "Engineer":
-
-                break;
-            case "Intern":
-
-                break;
-
-            default:
-                console.log("Please select a choice");
-
-        }
+        employeeInquirer(); 
+        generateManager(data);
     })
 
 
