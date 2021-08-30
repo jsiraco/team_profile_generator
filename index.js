@@ -12,10 +12,6 @@ class Manager extends Employee {
         this.officeNum = officeNum;
     }
 
-    printOffice() {
-        console.log(`Office #${this.officeNum}`)
-    }
-
     generateManager(data) {
         `
         <div class="column is-4">
@@ -34,7 +30,7 @@ class Manager extends Employee {
                     <br>
                     <div class="content">
                         <p>ID: ${data.id}</p>
-                        <p>Email: <a href="${data.email}" class="text-reset">${email}</a></p>
+                        <p>Email: <a href="${data.email}" class="text-reset">${data.email}</a></p>
                         <p>Office #: ${data.officeNum} </p>
                     </div>
                 </div>
@@ -49,10 +45,6 @@ class Engineer extends Employee {
     constructor(gitHub) {
         super("Mike", "Engineer", "mike@fakemail", 2);
         this.gitHub = gitHub;
-    }
-
-    printGitHub() {
-        console.log(`GitHub: ${this.gitHub}`)
     }
 
     generateEngineer(data) {
@@ -89,10 +81,6 @@ class Intern extends Employee {
         this.gitHub = gitHub;
     }
 
-    printGitHub() {
-        console.log(`GitHub: ${this.gitHub}`)
-    }
-
     generateIntern(data) {
         `
         <div class="column is-4">
@@ -121,6 +109,39 @@ class Intern extends Employee {
     }
 }
 
+const literalHTML = (data) => {
+    `
+    <!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Team Profile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="./dist/style.css">
+</head>
+
+<body>
+    <section class="hero is-success">
+        <div class="hero-body">
+            <h1 class="title has-text-centered">
+                Team Profile
+            </h1>
+        </div>
+    </section>
+    <br>
+    <div class="columns is-multiline is-mobile">
+        ${data.manager}
+        ${data.engineer}
+        ${data.intern}
+    </div>
+</body>
+
+</html>
+    `
+}
+
 //Prompt to choose Employee
 const employeeInquirer = () => {
     inquirer
@@ -128,8 +149,8 @@ const employeeInquirer = () => {
             {
                 type: "list",
                 name: "employee",
-                message: "Please select an employee type to add",
-                choices: ["Engineer", "Intern"],
+                message: "Please select an employee type to add, or exit",
+                choices: ["Engineer", "Intern", "Exit"],
             },
         ])
         .then(data => {
@@ -139,6 +160,9 @@ const employeeInquirer = () => {
                     break;
                 case "Intern":
                     internInquirer();
+                    break;
+                case "Exit":
+                    console.log("Terminated")
                     break;
             }
         })
@@ -170,8 +194,11 @@ const engineerInquirer = () => {
             },
         ])
         .then(data => {
-            generateEngineer(data);
+            const engineer = new Engineer(data.engineer, data.id, data.email, data.gitHub);
+
+            engineer.generateEngineer(data);
             employeeInquirer(); 
+            return engineer;
         })
 }
 
@@ -201,19 +228,27 @@ const internInquirer = () => {
             },
         ])
         .then(data => {
-            generateIntern(data);
+            const intern = new Intern(data.intern, data.id, data.email, data.gitHub);
+
+            intern.generateIntern(data);
             employeeInquirer(); 
+            return intern;
         })
 }
 
-//Inquirer Prompt to start application
+//Function to end application
+const generateHTML = (data) => {
+    const filename = "index.html";
+    const contentHTML = literalHTML(data);
+    //Writes file to system
+    fs.writeFile(filename, contentHTML, (err) => {
+        err ? console.log(err) : console.log("Success!")
+    })
+}
+
+//Inquirer Prompt to start application and built Manager
 inquirer
     .prompt([
-        {
-            type: "input",
-            name: "teamName",
-            message: "Please enter your team name",
-        },
         {
             type: "input",
             name: "manager",
@@ -236,20 +271,9 @@ inquirer
         },
     ])
     .then(data => {
+        const manager = new Manager(data.manager, data.id, data.email, data.officeNum);
+        
+        manager.generateManager(data);
         employeeInquirer(); 
-        generateManager(data);
+        return manager;
     })
-
-
-const manager = new Manager(229);
-const engineer = new Engineer("mike@github");
-const intern = new Intern("joe@github");
-
-manager.printInfo();
-manager.printOffice();
-
-intern.printInfo();
-intern.printGitHub();
-
-engineer.printInfo();
-engineer.printGitHub();
