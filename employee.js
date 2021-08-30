@@ -1,15 +1,25 @@
 class Employee {
-    constructor(person, role, email, id) {
-        this.person = person;
-        this.role = role,
-        this.email = email;
+    constructor(name, email, id) {
+        this.name = name;
         this.id = id;
+        this.email = email;
     }
 
-    printInfo() {
-        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
-        console.log(`This is ${this.person}, ${this.role}, employee #${this.id}, found at ${this.email}`);
-    }
+    getName() {
+        console.log(`This is ${this.name}`)
+    };
+
+    getId() {
+        console.log(`Their ID is ${this.id}`)
+    };
+
+    getEmail() {
+        console.log(`Their email is ${this.email}`)
+    };
+
+    getRole() {
+        return "Employee";
+    };
 }
 
 module.exports = Employee;
