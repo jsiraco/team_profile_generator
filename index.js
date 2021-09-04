@@ -43,6 +43,7 @@ function employeeQuestions(data) {
 };
 
 //Questions that are specific to an employee's role
+//Regex is used for validation
 const roleQuestions =
     [{
         type: "input",
