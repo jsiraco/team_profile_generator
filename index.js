@@ -6,8 +6,69 @@ const fs = require("fs");
 const Manager = require("./lib/manager");
 const Engineer = require("./lib/engineer");
 const Intern = require("./lib/intern");
+// Email validation
+const validation = require("email-validator");
 
 let team = [];
+
+//Employee Questions
+function employeeQuestions(data) {
+    return eQuestions = [
+        {
+            type: "input",
+            name: "name",
+            message: `Please enter the ${data}'s name`,
+        },
+        {
+            type: "input",
+            name: "email",
+            message: `Please enter the ${data}'s Email`,
+            validate(input) {
+                if (validation.validate(input)) {
+                    return true;
+                } else {
+                    return "Please enter a valid email."
+                }
+            }
+        },
+        {
+            type: "input",
+            name: "id",
+            message: `Please enter the ${data}'s Employee ID`,
+        }
+    ];
+};
+
+const roleQuestions = (data) => {
+    if (data instanceof Manager) {
+        return rQuestion = {
+            type: "input",
+            name: "id",
+            message: `Please enter the ${data}'s office #`,
+        };
+    } else if (data instanceof Engineer) {
+        return rQuestion = {
+            type: "input",
+            name: "id",
+            message: `Please enter the ${data}'s GitHub`,
+        };
+    } else if (data instanceof Intern) {
+        return rQuestion = {
+            type: "input",
+            name: "id",
+            message: `Please enter the ${data}'s school`,
+        };
+    } else {
+        return;
+    }
+};
+
+const roleSelection = {
+    type: "list",
+    name: "employee",
+    message: "Please select a role to add, or exit",
+    choices: ["Engineer", "Intern", "Exit"],
+};
 
 //Builds cards
 const buildCard = (data) => {
@@ -48,7 +109,7 @@ const buildCard = (data) => {
             </div>
         </div>
     </div>
-    `
+    `;
     return card;
 }
 
@@ -57,8 +118,9 @@ let engineer = new Engineer("Raj", "raj@fakemail.com", 2, "raj@github.com");
 let intern = new Intern("Josef", "josef@fakemail.com", 3, "University of New Hampshire");
 
 
-const literalHTML =
-    `
+const literalHTML = (data) => {
+    let page =
+        `
     <!DOCTYPE html>
 <html>
 
@@ -80,21 +142,73 @@ const literalHTML =
     </section>
     <br>
     <div class="columns is-multiline is-mobile">
-        ${buildCard(engineer)}
+        ${data}
     </div>
 </body>
 
 </html>
     `;
+    return page;
+};
 
-const writeFile = () => {
+const buildEmployee = () => {
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "name",
+                message: `Please enter the Manager's name`,
+            },
+            {
+                type: "input",
+                name: "email",
+                message: `Please enter the Managers's Email`,
+                validate(input) {
+                    if (validation.validate(input)) {
+                        return true;
+                    } else {
+                        return "Please enter a valid email."
+                    }
+                }
+            },
+            {
+                type: "input",
+                name: "id",
+                message: `Please enter the Manager's Employee ID`,
+            },
+            {
+                type: "input",
+                name: "office",
+                message: `Please enter the Manager's office #`,
+            }
+        ]).then((answers) => {
+            let manager = new Manager(answers.name, answers.email, answers.id, answers.office);
+            team.push(manager);
+            console.log(team);
+
+            inquirer.prompt(roleSelection).then((answer) => {
+                console.log(answer);
+
+            })
+
+            // function buildTeam(team) {
+            //     for (let i = 0; i < team.length; i++) {
+            //         return buildCard(team[i])
+            //     }
+            // }
+            // writeFile(buildTeam(team));
+        })
+}
+
+const writeFile = (cards) => {
     const filename = `index.html`;
-    const contentHTML = literalHTML;
+    const contentHTML = literalHTML(cards);
     //writes the file to the system, logs either a success or error
     fs.writeFile(filename, contentHTML, (err) => {
         err ? console.log(err) : console.log("Success!")
     });
 };
 
-writeFile();
+buildEmployee();
+
 
