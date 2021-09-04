@@ -2,137 +2,62 @@
 const inquirer = require("inquirer");
 //Require fs
 const fs = require("fs");
-//Require the Employee class
-const Employee = require("./employee");
-const { ArgumentOutOfRangeError } = require("rxjs");
+//Require the Employee classes
+const Manager = require("./lib/manager");
+const Engineer = require("./lib/engineer");
+const Intern = require("./lib/intern");
 
+let team = [];
 
-//Manager Class
-class Manager extends Employee {
-    constructor(officeNumber) {
-        super("Chiemi", "chiemi@fakemail.com", 1);
-        this.officeNumber = officeNumber;
-    }
-    getOfficeNumber() {
-        console.log(this.officeNumber);
-    }
-    getRole() {
-        return "Manager";
-    };
-}
+//Builds cards
+const buildCard = (data) => {
 
-//Engineer Class
-class Engineer extends Employee {
-    constructor(gitHub) {
-        super("Raj", "raj@fakemail.com", 2);
-        this.gitHub = gitHub;
+    let specialFunc = (data) => {
+        if (data instanceof Manager) {
+            return data.getOfficeNumber();
+        } else if (data instanceof Engineer) {
+            return data.getGithub();
+        } else if (data instanceof Intern) {
+            return data.getSchool();
+        } else {
+            return;
+        }
     }
-    getGithub() {
-        console.log(this.gitHub);
-    }
-    getRole() {
-        return "Engineer";
-    };
-}
 
-//Intern Class
-class Intern extends Employee {
-    constructor(school) {
-        super("Josef", "josef@fakemail.com", 3);
-        this.school = school;
-    }
-    getSchool() {
-
-    }
-    getRole() {
-        return "Intern";
-    };
-}
-
-//Manager HTML
-const managerHTML = (data) => {
-    `
+    let card =
+        `
     <div class="column is-4">
         <div class="card">
             <header class="card-header color-fill">
                 <h1 class="card-header-title">
-                    Manager ☕
+                    ${data.getRole()} ${data.getIcon()}
                 </h1>
             </header>
             <div class="card-content">
                 <div class="hero">
                     <h1 class="subtitle employee-name">
-                        ${data.manager}
+                        ${data.name}
                     </h1>
                 </div>
                 <br>
                 <div class="content">
                     <p>ID: ${data.id}</p>
                     <p>Email: <a href="${data.email}" class="text-reset">${data.email}</a></p>
-                    <p>Office #: ${data.officeNum} </p>
+                    <p>${specialFunc(data)}</p>
                 </div>
             </div>
         </div>
     </div>
     `
+    return card;
 }
 
-//Engineer HTML
-const engineerHTML = (data) => {
-    `
-    <div class="column is-4">
-        <div class="card">
-            <header class="card-header color-fill">
-                <h1 class="card-header-title">
-                    Engineer 🛠️
-                </h1>
-            </header>
-            <div class="card-content">
-                <div class="hero">
-                    <h1 class="subtitle employee-name">
-                        ${data.engineer}
-                    </h1>
-                </div>
-                <br>
-                <div class="content">
-                    <p>ID: ${data.id}</p>
-                    <p>Email: <a href="${data.email}" class="text-reset">${data.email}</a></p>
-                    <p>GitHub: <a href="${data.gitHub}" class="text-reset" target="_blank">${data.gitHub}</a></p>                    </div>
-            </div>
-        </div>
-    </div>
-    `
-}
+let manager = new Manager("Chiemi", "chiemi@fakemail.com", 1, 243);
+let engineer = new Engineer("Raj", "raj@fakemail.com", 2, "raj@github.com");
+let intern = new Intern("Josef", "josef@fakemail.com", 3, "University of New Hampshire");
 
-//Intern HTML
-const InternHTML = (data) => {
-    `
-    <div class="column is-4">
-        <div class="card">
-            <header class="card-header color-fill">
-                <h1 class="card-header-title">
-                    Intern ✏️
-                </h1>
-            </header>
-            <div class="card-content">
-                <div class="hero">
-                    <h1 class="subtitle employee-name">
-                        ${data.intern}
-                    </h1>
-                </div>
-                <br>
-                <div class="content">
-                    <p>ID: ${data.id}</p>
-                    <p>Email: <a href="${data.email}" class="text-reset">${data.email}</a></p>
-                    <p>GitHub: <a href="${data.gitHub}" class="text-reset" target="_blank">${data.gitHub}</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-    `
-}
 
-const literalHTML = (data) => {
+const literalHTML =
     `
     <!DOCTYPE html>
 <html>
@@ -155,20 +80,21 @@ const literalHTML = (data) => {
     </section>
     <br>
     <div class="columns is-multiline is-mobile">
-        ${}
+        ${buildCard(engineer)}
     </div>
 </body>
 
 </html>
-    `
-}
+    `;
 
-const manager = new Manager(243);
-const engineer = new Engineer("raj@github.com");
-const intern = new Intern("University of New Hampshire");
+const writeFile = () => {
+    const filename = `index.html`;
+    const contentHTML = literalHTML;
+    //writes the file to the system, logs either a success or error
+    fs.writeFile(filename, contentHTML, (err) => {
+        err ? console.log(err) : console.log("Success!")
+    });
+};
 
-manager.getName();
-manager.getId();
-manager.getRole();
-manager.getEmail();
-manager.getOfficeNumber();
+writeFile();
+
