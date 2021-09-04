@@ -129,7 +129,7 @@ const literalHTML = (data) => {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Team Profile</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <link rel="stylesheet" href="./dist/style.css">
+    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
@@ -197,7 +197,7 @@ let buildEmployee = (role) => {
 
 //Writes the file to memory
 const writeFile = (cards) => {
-    const filename = "/dist/index.html";
+    const filename = "./dist/index.html";
     const contentHTML = literalHTML(cards);
     //writes the file to the system, logs either a success or error
     fs.writeFile(filename, contentHTML, (err) => {
