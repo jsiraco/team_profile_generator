@@ -13,11 +13,12 @@ let team = [];
 
 //Employee Questions
 function employeeQuestions(data) {
-    return eQuestions = [
+    return (questions = [
         {
             type: "input",
             name: "name",
             message: `Please enter the ${data}'s name`,
+            validate: val => /[a-z]/gi.test(val), 
         },
         {
             type: "input",
@@ -35,33 +36,31 @@ function employeeQuestions(data) {
             type: "input",
             name: "id",
             message: `Please enter the ${data}'s Employee ID`,
+            validate: val => /[a-z1-9]/gi.test(val), 
         }
-    ];
+    ]);
 };
 
-const roleQuestions = (data) => {
-    if (data instanceof Manager) {
-        return rQuestion = {
-            type: "input",
-            name: "id",
-            message: `Please enter the ${data}'s office #`,
-        };
-    } else if (data instanceof Engineer) {
-        return rQuestion = {
-            type: "input",
-            name: "id",
-            message: `Please enter the ${data}'s GitHub`,
-        };
-    } else if (data instanceof Intern) {
-        return rQuestion = {
-            type: "input",
-            name: "id",
-            message: `Please enter the ${data}'s school`,
-        };
-    } else {
-        return;
-    }
-};
+
+const roleQuestions =
+    [{
+        type: "input",
+        name: "office",
+        message: `Please enter the Manager's office #`,
+        validate: val => /[a-z1-9]/gi.test(val), 
+    },
+    {
+        type: "input",
+        name: "github",
+        message: `Please enter the Engineer's GitHub`,
+        validate: val => /[a-z1-9]/gi.test(val), 
+    },
+    {
+        type: "input",
+        name: "school",
+        message: `Please enter the Intern's school`,
+        validate: val => /[a-z]/gi.test(val), 
+    }];
 
 const roleSelection = {
     type: "list",
@@ -69,6 +68,7 @@ const roleSelection = {
     message: "Please select a role to add, or exit",
     choices: ["Engineer", "Intern", "Exit"],
 };
+
 
 //Builds cards
 const buildCard = (data) => {
@@ -113,11 +113,6 @@ const buildCard = (data) => {
     return card;
 }
 
-let manager = new Manager("Chiemi", "chiemi@fakemail.com", 1, 243);
-let engineer = new Engineer("Raj", "raj@fakemail.com", 2, "raj@github.com");
-let intern = new Intern("Josef", "josef@fakemail.com", 3, "University of New Hampshire");
-
-
 const literalHTML = (data) => {
     let page =
         `
@@ -151,54 +146,52 @@ const literalHTML = (data) => {
     return page;
 };
 
-const buildEmployee = () => {
-    inquirer
-        .prompt([
-            {
-                type: "input",
-                name: "name",
-                message: `Please enter the Manager's name`,
-            },
-            {
-                type: "input",
-                name: "email",
-                message: `Please enter the Managers's Email`,
-                validate(input) {
-                    if (validation.validate(input)) {
-                        return true;
-                    } else {
-                        return "Please enter a valid email."
-                    }
-                }
-            },
-            {
-                type: "input",
-                name: "id",
-                message: `Please enter the Manager's Employee ID`,
-            },
-            {
-                type: "input",
-                name: "office",
-                message: `Please enter the Manager's office #`,
-            }
-        ]).then((answers) => {
-            let manager = new Manager(answers.name, answers.email, answers.id, answers.office);
-            team.push(manager);
-            console.log(team);
+//Builds cards for the team
+// function buildTeam(team) {
+//     for (let i = 0; i < team.length; i++) {
+//         return buildCard(team[i])
+//     }
+// }
 
-            inquirer.prompt(roleSelection).then((answer) => {
-                console.log(answer);
+let role = "Manager"
 
+let buildEmployee = (role) => {
+    let managerQuestions = [...employeeQuestions("Manager"), roleQuestions[0], roleSelection];
+    let engineerQuestions = [...employeeQuestions("Engineer"), roleQuestions[1], roleSelection];
+    let internQuestions = [...employeeQuestions("Intern"), roleQuestions[2], roleSelection];
+
+    switch (role) {
+        case "Manager":
+            inquirer.prompt(managerQuestions).then((answers) => {
+                let manager = new Manager(answers.name, answers.email, answers.id, answers.office);
+                team.push(buildCard(manager));
+                role = answers.employee;
+                buildEmployee(role);
             })
-
-            // function buildTeam(team) {
-            //     for (let i = 0; i < team.length; i++) {
-            //         return buildCard(team[i])
-            //     }
-            // }
-            // writeFile(buildTeam(team));
-        })
+            break;
+        case "Engineer":
+            inquirer.prompt(engineerQuestions).then((answers) => {
+                let engineer = new Engineer(answers.name, answers.email, answers.id, answers.github);
+                team.push(buildCard(engineer));
+                role = answers.employee;
+                buildEmployee(role);
+            })
+            break;
+        case "Intern":
+            inquirer.prompt(internQuestions).then((answers) => {
+                let intern = new Intern(answers.name, answers.email, answers.id, answers.school);
+                team.push(buildCard(intern));
+                role = answers.employee;
+                buildEmployee(role);
+            })
+            break;
+        case "Exit":
+            stringTeam = team.toString().replace(/,/g, "")
+            writeFile(stringTeam);
+    }
 }
+
+
 
 const writeFile = (cards) => {
     const filename = `index.html`;
@@ -209,6 +202,6 @@ const writeFile = (cards) => {
     });
 };
 
-buildEmployee();
+buildEmployee(role);
 
 
