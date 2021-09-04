@@ -9,6 +9,7 @@ const Intern = require("./lib/intern");
 // Email validation
 const validation = require("email-validator");
 
+//Empty team array to set type
 let team = [];
 
 //Employee Questions
@@ -41,7 +42,7 @@ function employeeQuestions(data) {
     ]);
 };
 
-
+//Questions that are specific to an employee's role
 const roleQuestions =
     [{
         type: "input",
@@ -62,6 +63,7 @@ const roleQuestions =
         validate: val => /[a-z]/gi.test(val), 
     }];
 
+//Question to choose which role to add
 const roleSelection = {
     type: "list",
     name: "employee",
@@ -85,6 +87,7 @@ const buildCard = (data) => {
         }
     }
 
+    //A template literal for the HTML cards that will appended to the page
     let card =
         `
     <div class="column is-4">
@@ -113,6 +116,7 @@ const buildCard = (data) => {
     return card;
 }
 
+//Builds the HTML as a template literal
 const literalHTML = (data) => {
     let page =
         `
@@ -146,20 +150,17 @@ const literalHTML = (data) => {
     return page;
 };
 
-//Builds cards for the team
-// function buildTeam(team) {
-//     for (let i = 0; i < team.length; i++) {
-//         return buildCard(team[i])
-//     }
-// }
-
+//Defalut value for role so the application starts with "Manager" selected
 let role = "Manager"
 
+//Builds each employee role
 let buildEmployee = (role) => {
+    //Creates the list of questions used for each role
     let managerQuestions = [...employeeQuestions("Manager"), roleQuestions[0], roleSelection];
     let engineerQuestions = [...employeeQuestions("Engineer"), roleQuestions[1], roleSelection];
     let internQuestions = [...employeeQuestions("Intern"), roleQuestions[2], roleSelection];
 
+    //If buildEmployee has a certain paramter passed, there is a switch statement to determine which questions are asked
     switch (role) {
         case "Manager":
             inquirer.prompt(managerQuestions).then((answers) => {
@@ -185,6 +186,7 @@ let buildEmployee = (role) => {
                 buildEmployee(role);
             })
             break;
+            //If exit is selected the team array is stringified and then a regex expression is used to remove the "," left over from being an array
         case "Exit":
             stringTeam = team.toString().replace(/,/g, "")
             writeFile(stringTeam);
@@ -192,7 +194,7 @@ let buildEmployee = (role) => {
 }
 
 
-
+//Writes the file to memory
 const writeFile = (cards) => {
     const filename = `index.html`;
     const contentHTML = literalHTML(cards);
@@ -202,6 +204,7 @@ const writeFile = (cards) => {
     });
 };
 
+//starts the application
 buildEmployee(role);
 
 
