@@ -197,7 +197,7 @@ let buildEmployee = (role) => {
 
 //Writes the file to memory
 const writeFile = (cards) => {
-    const filename = `index.html`;
+    const filename = "/dist/index.html";
     const contentHTML = literalHTML(cards);
     //writes the file to the system, logs either a success or error
     fs.writeFile(filename, contentHTML, (err) => {
