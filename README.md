@@ -25,6 +25,8 @@ Fork Repository
 
 ## Usage
 
+![Inquirer Screenshot](https://user-images.githubusercontent.com/83827081/132139617-7fa64ef2-c39e-4714-9cd0-6748b50592f0.png)
+
 
 ## Tests
 Jest is used for testing, run with 'npm run test'
