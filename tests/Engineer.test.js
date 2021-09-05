@@ -13,7 +13,7 @@ describe("Engineer", () => {
         });
 
         it("Should return the corresponding value", () => {
-            const engineer = new Engineer("Raj", "rpatel@gmail.com", 2, "itstheraj@github.com");
+            const engineer = new Engineer("Raj", "rpatel@gmail.com", 2, "github.com/rpatel");
 
             const name = engineer.getName();
             const email = engineer.getEmail();
@@ -26,7 +26,7 @@ describe("Engineer", () => {
             expect(email).toEqual("rpatel@gmail.com");
             expect(id).toEqual(2);
             expect(role).toEqual("Engineer");
-            expect(gitHub).toEqual("GitHub: itstheraj@github.com");
+            expect(gitHub).toEqual("GitHub: <a href=https://github.com/rpatel class=\"text-reset\">github.com/rpatel</a>");
             expect(icon).toEqual("🛠️");
         });
     })
