@@ -28,9 +28,15 @@ Fork Repository
 https://user-images.githubusercontent.com/83827081/132139822-caf4e45c-3d98-439a-a18a-afebd5816db6.mp4
 ![Node Team Builder Demo]
 
+### Video Jest Demo
+https://user-images.githubusercontent.com/83827081/132140438-fde5e642-c752-40a3-a4fa-c18b2dd55e9d.mp4
+![Node Testing Demo]
+
 ### Inquirer Screenshot
 ![Inquirer Screenshot](https://user-images.githubusercontent.com/83827081/132139617-7fa64ef2-c39e-4714-9cd0-6748b50592f0.png)
 
+### Test Screenshot
+![jest_tests_screenshot](https://user-images.githubusercontent.com/83827081/132140433-07873db1-7cd3-4f8a-8e76-1c35c6245c49.png)
 
 ## Tests
 Jest is used for testing, run with 'npm run test'
